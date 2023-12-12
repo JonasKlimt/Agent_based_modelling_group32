@@ -2,7 +2,7 @@
 /sen1211
 
 # ignore the input data
-base_model_mesa/input_data/
+/input_data
 
-# ignore the input data in case your root directory is named after the gitHub repository
-Agent_based_modelling_group32/input_data/
+# ignore the jupter notbook demo
+/model/demo.ipynb
