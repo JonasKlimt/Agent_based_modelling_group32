@@ -1,1 +1,8 @@
+# irgnore the virtual environment
 /sen1211
+
+# ignore the input data
+base_model_mesa/input_data/
+
+# ignore the input data in case your root directory is named after the gitHub repository
+Agent_based_modelling_group32/input_data/
