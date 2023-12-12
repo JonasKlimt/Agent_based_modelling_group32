@@ -149,7 +149,6 @@ class AdaptationModel(Model):
         adapted_count = sum([1 for agent in self.schedule.agents if isinstance(agent, Households) and agent.is_adapted])
         return adapted_count
 
-#%%    
     def plot_model_domain_with_agents(self):
         fig, ax = plt.subplots()
         # Plot the model domain
@@ -172,7 +171,6 @@ class AdaptationModel(Model):
         plt.xlabel('Longitude')
         plt.ylabel('Latitude')
         plt.show()
-#%%
 
     def step(self):
         """
