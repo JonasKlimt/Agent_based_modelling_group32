@@ -3,6 +3,3 @@
 
 # ignore the input data
 /input_data
-
-# ignore the jupter notbook demo
-/model/demo.ipynb

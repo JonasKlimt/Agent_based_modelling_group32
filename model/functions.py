@@ -65,8 +65,8 @@ def get_flood_map_data(flood_map):
     bound_b = flood_map.bounds.bottom
     return band, bound_l, bound_r, bound_t, bound_b
 
-shapefile_path = r'../base_model_mesa/input_data/model_domain/houston_model/houston_model.shp'
-floodplain_path = r'../base_model_mesa/input_data/floodplain/floodplain_area.shp'
+shapefile_path = r'../input_data/model_domain/houston_model/houston_model.shp'
+floodplain_path = r'../input_data/floodplain/floodplain_area.shp'
 
 # Model area setup
 map_domain_gdf = gpd.GeoDataFrame.from_file(shapefile_path)
