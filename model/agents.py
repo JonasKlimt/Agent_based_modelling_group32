@@ -70,6 +70,8 @@ class Government(Agent):
 
     def step(self):
         # The government agent doesn't perform any actions.
+        # TODO: Add government actions here.
         pass
 
 # More agent classes can be added here, e.g. for insurance agents.
+# TODO: Add insurance agent class here.
