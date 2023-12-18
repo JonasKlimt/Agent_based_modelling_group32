@@ -182,6 +182,8 @@ class AdaptationModel(Model):
         assume local flooding instead of global flooding). The actual flood depth can be 
         estimated differently
         """
+        # TODO: Modify when flood hits. Maybe modify how the flood depth is calculated if we have additional time.
+        
         if self.schedule.steps == 5:
             for agent in self.schedule.agents:
                 # Calculate the actual flood depth as a random number between 0.5 and 1.2 times the estimated flood depth

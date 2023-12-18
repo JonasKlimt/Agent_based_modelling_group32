@@ -59,6 +59,16 @@ class Households(Agent):
         # These conditions are examples and should be refined for real-world applications.
         if self.flood_damage_estimated > 0.15 and random.random() < 0.2:
             self.is_adapted = True  # Agent adapts to flooding
+            
+        # TODO: Add more logic here. This is where the adaptation decision is made.
+        # From the assignment:
+            # households save money
+            # households communictae with each other
+            # households update their perception (this has to be introduced as well)
+            # households recondiser their adaptation decision
+            # households take adaption measures
+            
+            # all of the above must be modelled according to the prospect theory
         
 # Define the Government agent class
 class Government(Agent):
@@ -70,8 +80,9 @@ class Government(Agent):
 
     def step(self):
         # The government agent doesn't perform any actions.
-        # TODO: Add government actions here.
+        # TODO: Add government actions here. Has to be based on a theory. BUT is this mandatory/necessary? Course description says we should focus on one actor?
+        # Government could subsidize adaptation.
         pass
 
 # More agent classes can be added here, e.g. for insurance agents.
-# TODO: Add insurance agent class here.
+# This is not mandatory. I think we should leave it for now. We can add it later if we have time.
