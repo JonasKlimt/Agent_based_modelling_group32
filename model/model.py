@@ -71,6 +71,7 @@ class AdaptationModel(Model):
             self.grid.place_agent(agent=household, node_id=node)
 
         # You might want to create other agents here, e.g. insurance agents.
+        # TODO: add government agent here
 
         # Data collection setup to collect data
         model_metrics = {
@@ -183,6 +184,8 @@ class AdaptationModel(Model):
         estimated differently
         """
         # TODO: Modify when flood hits. Maybe modify how the flood depth is calculated if we have additional time.
+        
+        # TODO: The actual flood damage must be calculated depending on adaptation measures taken or not.
         
         if self.schedule.steps == 5:
             for agent in self.schedule.agents:
