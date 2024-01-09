@@ -97,8 +97,8 @@ class AdaptationModel(Model):
                         "FloodDamageActual" : "flood_damage_actual",
                         "IsAdapted": "is_adapted",
                         "FriendsCount": lambda a: a.count_friends(radius=1),
-                        "location":"location",
-                        "income":"income"
+                        "Location":"location",
+                        "Income":"income"
                         # ... other reporters ...
                         # TODO: add more agent metrics here
                         }
