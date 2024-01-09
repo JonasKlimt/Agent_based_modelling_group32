@@ -58,7 +58,6 @@ class Households(Agent):
 
     def step(self):
         # Cost of adaption measures
-        # cost_measure = 500 - Government.subsidies
         cost_measure = 500 - self.model.government.subsidies
         # Threshold of minimum savings housholds still have after taking adaption measures
         savings_threshold = 500
@@ -92,7 +91,6 @@ class Government(Agent):
         self.subsidies = 300 # Add subsidies attribute
 
     def step(self):
-        # TODO: Add government actions here. Has to be based on a theory. BUT is this mandatory/necessary? Course description says we should focus on one actor?
         pass
 
 # More agent classes can be added here, e.g. for insurance agents.

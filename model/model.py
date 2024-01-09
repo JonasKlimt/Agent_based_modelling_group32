@@ -75,6 +75,15 @@ class AdaptationModel(Model):
     
             # Create the household with the chosen savings level
             household = Households(unique_id=i, model=self, savings=savings)
+            
+            # TODO: Add attributes and inital values here
+            # Perception
+                # Estimated damage
+                # Percieved flood likleyhood (risk)
+            
+                # Savings
+                # Influence by friends
+                
     
             # Add the household to the schedule and place it on the grid
             self.schedule.add(household)
@@ -90,7 +99,7 @@ class AdaptationModel(Model):
         model_metrics = {
             "total_adapted_households": self.total_adapted_households,
             # ... other reporters ...
-            # TODO: add more model metrics here
+            # TODO: add more model metrics here?
         }
         
         agent_metrics = {
