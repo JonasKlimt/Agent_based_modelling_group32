@@ -19,6 +19,7 @@ class Households(Agent):
     def __init__(self, unique_id, model, income):
         super().__init__(unique_id, model)
         self.is_adapted = False  # Initial adaptation status set to False
+        
         self.income = income  # Add income attribute
 
         # getting flood map values
@@ -60,6 +61,9 @@ class Households(Agent):
         # These conditions are examples and should be refined for real-world applications.
         if self.flood_damage_estimated > 0.15 and random.random() < 0.2:
             self.is_adapted = True  # Agent adapts to flooding
+            
+        # Multiply the savings with a random factor between 0.9 and 1.1 to simulate savings and expenses of the household
+        self.income = self.income * random.uniform(0.9, 1.1)
             
         # TODO: Add more logic here. This is where the adaptation decision is made.
         # From the assignment:
