@@ -71,12 +71,14 @@ class AdaptationModel(Model):
             self.grid.place_agent(agent=household, node_id=node)
 
         # You might want to create other agents here, e.g. insurance agents.
-        # TODO: add government agent here
+        # TODO: add government agent here (create an if statement to analyze model with and without policy implementation; are the results statistically significant?)
+        # TODO: perform statisitcal analysis to see the effect of policy implementation
 
         # Data collection setup to collect data
         model_metrics = {
                         "total_adapted_households": self.total_adapted_households,
                         # ... other reporters ...
+                        # TODO: add more model metrics here
                         }
         
         agent_metrics = {
@@ -88,6 +90,7 @@ class AdaptationModel(Model):
                         "FriendsCount": lambda a: a.count_friends(radius=1),
                         "location":"location",
                         # ... other reporters ...
+                        # TODO: add more agent metrics here
                         }
         #set up the data collector 
         self.datacollector = DataCollector(model_reporters=model_metrics, agent_reporters=agent_metrics)
