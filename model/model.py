@@ -11,6 +11,7 @@ import random
 
 # Import the agent class(es) from agents.py
 from agents import Households
+from agents import Government
 
 # Import functions from functions.py
 from functions import get_flood_map_data, calculate_basic_flood_damage
@@ -79,16 +80,18 @@ class AdaptationModel(Model):
             self.schedule.add(household)
             self.grid.place_agent(agent=household, node_id=node)
 
-        # You might want to create other agents here, e.g. insurance agents.
+        # Create a Government agent and assign it to an attribute
+        self.government = Government(1, model=self)
+                
         # TODO: add government agent here (create an if statement to analyze model with and without policy implementation; are the results statistically significant?)
         # TODO: perform statisitcal analysis to see the effect of policy implementation
 
         # Data collection setup to collect data
         model_metrics = {
-                        "total_adapted_households": self.total_adapted_households,
-                        # ... other reporters ...
-                        # TODO: add more model metrics here
-                        }
+            "total_adapted_households": self.total_adapted_households,
+            # ... other reporters ...
+            # TODO: add more model metrics here
+        }
         
         agent_metrics = {
                         "FloodDepthEstimated": "flood_depth_estimated",
