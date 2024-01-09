@@ -16,11 +16,11 @@ class Households(Agent):
     In a real scenario, this would be based on actual geographical data or more complex logic.
     """
 
-    def __init__(self, unique_id, model, income):
+    def __init__(self, unique_id, model, savings):
         super().__init__(unique_id, model)
         self.is_adapted = False  # Initial adaptation status set to False
         
-        self.income = income  # Add income attribute
+        self.savings = savings  # Add savings attribute
 
         # getting flood map values
         # Get a random location on the map
@@ -57,13 +57,20 @@ class Households(Agent):
         return len(friends)
 
     def step(self):
+        # Cost of adaption measures
+        cost_measure = 500
+        
+        # Threshold of minimum savings housholds still have after taking adaption measures
+        savings_threshold = 500
+        
         # Logic for adaptation based on estimated flood damage and a random chance.
         # These conditions are examples and should be refined for real-world applications.
-        if self.flood_damage_estimated > 0.15 and random.random() < 0.2:
+        if self.flood_damage_estimated > 0.15 and random.random() < 0.2 and self.savings > cost_measure + savings_threshold:
             self.is_adapted = True  # Agent adapts to flooding
+            self.savings = self.savings - cost_measure  # Agent pays for adaptation measures
             
         # Multiply the savings with a random factor between 0.9 and 1.1 to simulate savings and expenses of the household
-        self.income = self.income * random.uniform(0.9, 1.1)
+        self.savings = self.savings * random.uniform(0.9, 1.1)
             
         # TODO: Add more logic here. This is where the adaptation decision is made.
         # From the assignment:
@@ -84,6 +91,8 @@ class Government(Agent):
         super().__init__(unique_id, model)
 
     def step(self):
+        # 
+        
         # The government agent doesn't perform any actions.
         # TODO: Add government actions here. Has to be based on a theory. BUT is this mandatory/necessary? Course description says we should focus on one actor?
         # Government could subsidize adaptation.
