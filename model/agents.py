@@ -16,9 +16,10 @@ class Households(Agent):
     In a real scenario, this would be based on actual geographical data or more complex logic.
     """
 
-    def __init__(self, unique_id, model):
+    def __init__(self, unique_id, model, income):
         super().__init__(unique_id, model)
         self.is_adapted = False  # Initial adaptation status set to False
+        self.income = income  # Add income attribute
 
         # getting flood map values
         # Get a random location on the map

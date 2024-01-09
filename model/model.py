@@ -63,10 +63,19 @@ class AdaptationModel(Model):
 
         # set schedule for agents
         self.schedule = RandomActivation(self)  # Schedule for activating agents
+        
+        # Define the income levels
+        income_levels = [1000, 2000, 3000]
 
-        # create households through initiating a household on each node of the network graph
+        # Create households through initiating a household on each node of the network graph
         for i, node in enumerate(self.G.nodes()):
-            household = Households(unique_id=i, model=self)
+            # Choose a random income level for the household
+            income = random.choice(income_levels)
+    
+            # Create the household with the chosen income level
+            household = Households(unique_id=i, model=self, income=income)
+    
+            # Add the household to the schedule and place it on the grid
             self.schedule.add(household)
             self.grid.place_agent(agent=household, node_id=node)
 
