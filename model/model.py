@@ -14,7 +14,7 @@ from agents import Households
 from agents import Government
 
 # Import functions from functions.py
-from functions import get_flood_map_data, calculate_basic_flood_damage
+from functions import get_flood_map_data, calculate_basic_flood_damage, calculate_adapted_flood_damage
 from functions import map_domain_gdf, floodplain_gdf
 
 
@@ -216,9 +216,20 @@ class AdaptationModel(Model):
             for agent in self.schedule.agents:
                 # Calculate the actual flood depth as a random number between 0.5 and 1.2 times the estimated flood depth
                 agent.flood_depth_actual = random.uniform(0.5, 1.2) * agent.flood_depth_estimated
-                # calculate the actual flood damage given the actual flood depth
-                agent.flood_damage_actual = calculate_basic_flood_damage(agent.flood_depth_actual)
-        
+                
+                # IF statement to calculate flood damage depending on adaptation measures taken or not
+                if agent.is_adapted:
+                    # calculate the flood damage given the actual flood depth if household is adapted
+                    agent.flood_damage_actual = calculate_adapted_flood_damage(agent.flood_depth_actual)
+                else:
+                    # calculate the flood damage given the actual flood depth if household is not adapted
+                    agent.flood_damage_actual = calculate_basic_flood_damage(agent.flood_depth_actual)
+                    
         # Collect data and advance the model by one step
         self.datacollector.collect(self)
         self.schedule.step()
+
+
+# TODO: 3 different subsidies level
+# three different scenarios
+# 

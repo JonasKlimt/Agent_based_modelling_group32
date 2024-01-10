@@ -140,6 +140,7 @@ def get_position_flood(bound_l, bound_r, bound_t, bound_b, img, seed):
     row, col = img.index(x, y)
     return x, y, row, col
 
+# Function to calcualte flood damage when no adaptation measure is taken
 def calculate_basic_flood_damage(flood_depth):
     """
     To get flood damage based on flood depth of household
@@ -163,4 +164,27 @@ def calculate_basic_flood_damage(flood_depth):
         flood_damage = 0.1746 * math.log(flood_depth) + 0.6483
     return flood_damage
 
-# TODO: Idea: add a function to calculate the flood damage based on the flood depth and the adaptation status of the household
+# Function to calculate the flood damage when an adaptation measure is taken
+def calculate_adapted_flood_damage(flood_depth):
+    """
+    To get flood damage based on flood depth of household
+    from de Moer, Huizinga (2017) with logarithmic regression over it.
+    Adapted equation: Flood adaptation measure taken by houshold, which elevates house by 1.2m
+    If flood depth > 7m, damage = 1.
+    
+    Parameters
+    ----------
+    flood_depth : flood depth as given by location within model domain
+
+    Returns
+    -------
+    flood_damage : damage factor between 0 and 1
+    """
+    if flood_depth >= 7:
+        flood_damage = 1
+    elif flood_depth < 1.025:
+        flood_damage = 0
+    else:
+        # see flood_damage.xlsx for function generation
+        flood_damage = 0.1746 * math.log(flood_depth+1) + 0.6483
+    return flood_damage
