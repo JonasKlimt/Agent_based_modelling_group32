@@ -11,6 +11,7 @@ import math
 from shapely import contains_xy
 from shapely import prepare
 import geopandas as gpd
+import rasterio as rs
 
 def set_initial_values(input_data, parameter, seed):
     """
@@ -188,3 +189,85 @@ def calculate_adapted_flood_damage(flood_depth):
         # see flood_damage.xlsx for function generation
         flood_damage = 0.1746 * math.log(flood_depth+1) + 0.6483
     return flood_damage
+
+# TODO: cite paper
+def expected_utility_prospect_theory(risk_of_flood, cost_of_measure, percieved_flood_damage, action):
+    """
+    General utility function for the prospect theory model.
+
+    Parameters:
+    - risk_of_flood: Risk of a flood = pi in subjective_weighting_probability
+    - cost_of_measure: Cost of adaptation measure
+    - flood_damage: Flood damage (flood_damage and cost_of_measure are used to calculate x in utility_function_prospect_theory)
+    - action: Adaptation measure taken or not (boolean variable)
+
+    Returns:
+    - Utility for the outcome
+    """
+    
+    if action:
+        return subjective_weighting_probability(risk_of_flood) * utility_function_prospect_theory(-cost_of_measure-calculate_adapted_flood_damage(percieved_flood_damage))
+    else:
+        return subjective_weighting_probability(risk_of_flood) * utility_function_prospect_theory(-calculate_basic_flood_damage(percieved_flood_damage))
+        
+
+def subjective_weighting_probability(pi, mean_delta=0.69, std_delta=0.025):
+    """
+    Calculate the subjective weighting of the probability of a flood.
+
+    Parameters:
+    - pi: Probability of a flood
+    - mean_delta: Mean of the delta parameter
+    - std_delta: Standard deviation of the delta parameter
+
+    Returns:
+    - Subjective weighting of the probability
+    """
+    
+    delta = np.random.normal(mean_delta, std_delta) # delta: Heterogeneity parameter drawn from a random distribution for each household
+    
+    return pi * delta / (pi * delta + (1 - pi) * delta) ** (1 / delta)
+
+
+def utility_function_prospect_theory(x, mean_lambda=2.25, std_lambda=1, mean_theta=0.88, std_theta=0.065):
+    """
+    General utility function for the prospect theory model.
+
+    Parameters:
+    - x: Outcome (gain or loss)
+    - mean_lambda: Mean of the lambda parameter
+    - std_lambda: Standard deviation of the lambda parameter
+    - mean_theta: Mean of the theta parameter
+    - std_theta: Standard deviation of the theta parameter
+
+    Returns:
+    - Utility for the outcome
+    """
+    
+    lambda_val = np.random.normal(mean_lambda, std_lambda)
+    theta = np.random.normal(mean_theta, std_theta)
+    
+    return -lambda_val * (-x) ** theta
+
+
+def load_flood_map(flood_map_choice):
+    """
+    Initialize and set up the flood map related data based on the provided flood map choice.
+    """
+    # Define paths to flood maps
+    flood_map_paths = {
+        'harvey': r'../input_data/floodmaps/Harvey_depth_meters.tif',
+        '100yr': r'../input_data/floodmaps/100yr_storm_depth_meters.tif',
+        '500yr': r'../input_data/floodmaps/500yr_storm_depth_meters.tif' 
+    }
+
+    # Throw a ValueError if the flood map choice is not in the dictionary
+    if flood_map_choice not in flood_map_paths.keys():
+        raise ValueError(f"Unknown flood map choice: '{flood_map_choice}'. "
+                            f"Currently implemented choices are: {list(flood_map_paths.keys())}")
+
+    # Choose the appropriate flood map based on the input choice
+    flood_map_path = flood_map_paths[flood_map_choice]
+
+    # Loading and setting up the flood map
+    return rs.open(flood_map_path)

@@ -90,7 +90,7 @@ class AdaptationModel(Model):
             self.grid.place_agent(agent=household, node_id=node)
 
         # Create a Government agent and assign it to an attribute
-        self.government = Government(1, model=self)
+        self.government = Government(unique_id=1, model=self)
                 
         # TODO: add government agent here (create an if statement to analyze model with and without policy implementation; are the results statistically significant?)
         # TODO: perform statisitcal analysis to see the effect of policy implementation
@@ -209,8 +209,6 @@ class AdaptationModel(Model):
         estimated differently
         """
         # TODO: Modify when flood hits. Maybe modify how the flood depth is calculated if we have additional time.
-        
-        # TODO: The actual flood damage must be calculated depending on adaptation measures taken or not.
         
         if self.schedule.steps == 5:
             for agent in self.schedule.agents:
