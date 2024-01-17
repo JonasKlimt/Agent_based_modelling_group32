@@ -190,7 +190,11 @@ def calculate_adapted_flood_damage(flood_depth):
         flood_damage = 0.1746 * math.log(flood_depth+1) + 0.6483
     return flood_damage
 
-# TODO: cite paper
+# Expected utility based on the prospect theory, Source:
+# Haer, T., Botzen, W. J. W., de Moel, H., & Aerts, J. C. J. H. (2017).
+# Integrating Household Risk Mitigation Behavior in Flood Risk Analysis: An Agent-Based Model Approach.
+# Risk Analysis, 37(10), 1977–1992. https://doi.org/10.1111/risa.12740
+
 def expected_utility_prospect_theory(risk_of_flood, cost_of_measure, percieved_flood_damage, action):
     """
     General utility function for the prospect theory model.

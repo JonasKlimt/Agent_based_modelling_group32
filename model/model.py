@@ -65,6 +65,9 @@ class AdaptationModel(Model):
         # set schedule for agents
         self.schedule = RandomActivation(self)  # Schedule for activating agents
         
+        # Create a Government agent and assign it to an attribute
+        self.government = Government(unique_id=0, model=self)
+        
         # Define the savings levels
         savings_levels = [1000, 2000, 3000]
 
@@ -88,9 +91,6 @@ class AdaptationModel(Model):
             # Add the household to the schedule and place it on the grid
             self.schedule.add(household)
             self.grid.place_agent(agent=household, node_id=node)
-
-        # Create a Government agent and assign it to an attribute
-        self.government = Government(unique_id=1, model=self)
                 
         # TODO: add government agent here (create an if statement to analyze model with and without policy implementation; are the results statistically significant?)
         # TODO: perform statisitcal analysis to see the effect of policy implementation

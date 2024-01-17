@@ -61,7 +61,7 @@ class Households(Agent):
         self.flood_risk = [0.4, 0.3, 0.3, 0.0] # TODO: are these risk perceptions realisitc?
         
         # Cost of adaption measures
-        cost_measure = 1 #TODO: exchange this with variable coming from the government agent
+        self.cost_measure = 1 - self.model.government.subsidies #TODO: exchange this with variable coming from the government agent
         # TODO: adapt cost measure so that is realisitc compared to estimated damage (also in money value), probably should adapt estimated damage (mulitply it wiht a price)
         
         # Initialize variables to store the sums
@@ -71,12 +71,12 @@ class Households(Agent):
         # Sum the expected utilities for each flood risk and perceived flood damage to get the total expected utility for action=True and action=False (see formula paper # TODO add paper reference)
         for risk_of_flood, perceived_flood_damage in zip(self.flood_risk, self.flood_damage_estimated_list):
             # Calculate the expected utility for adaptation=True
-            utility_adaptation_true = expected_utility_prospect_theory(risk_of_flood=risk_of_flood, cost_of_measure=cost_measure, percieved_flood_damage=perceived_flood_damage, action=True)
+            utility_adaptation_true = expected_utility_prospect_theory(risk_of_flood=risk_of_flood, cost_of_measure=self.cost_measure, percieved_flood_damage=perceived_flood_damage, action=True)
             # Add the result to the sum for adaptation=True
             self.expected_utility_measure += utility_adaptation_true
 
             # Calculate the expected utility for adaptation=False
-            utility_adaptation_false = expected_utility_prospect_theory(risk_of_flood=risk_of_flood, cost_of_measure=cost_measure, percieved_flood_damage=perceived_flood_damage, action=False)
+            utility_adaptation_false = expected_utility_prospect_theory(risk_of_flood=risk_of_flood, cost_of_measure=self.cost_measure, percieved_flood_damage=perceived_flood_damage, action=False)
             # Add the result to the sum for adaptation=False
             self.expected_utility_nomeasure += utility_adaptation_false
 
@@ -94,28 +94,23 @@ class Households(Agent):
         return len(friends)
 
     def step(self):
-        # Cost of adaption measures
-        cost_measure = 1 #TODO: find nice solution to only define cost_measure once
         # Threshold of minimum savings housholds still have after taking adaption measures
         savings_threshold = 0.5 # necessary?
-    
-        # TODO: add below
-        # IF one friend is adapted calculate liklihood of adapting of self
-        # only adapt if enough money is available
         
         # Logic for adaptation based on estimated flood damage and a random chance.
         # These conditions are examples and should be refined for real-world applications.
-        if self.expected_utility_measure > self.expected_utility_nomeasure and self.savings > (cost_measure + savings_threshold):
+        if self.expected_utility_measure > self.expected_utility_nomeasure and self.savings > (self.cost_measure + savings_threshold):
             self.is_adapted = True  # Agent adapts to flooding
-            self.savings = self.savings - cost_measure  # Agent pays for adaptation measures
+            self.savings = self.savings - self.cost_measure  # Agent pays for adaptation measures
         
+        # Logic for adaptation based on neighbors who have adapted and a random chance
         # Iterate over the neighbors
         for neighbor in self.model.grid.get_neighbors(self.pos):
             # If the neighbor is adapted and there is a 1% chance of adapting and the savings are enough to pay for the adaptation measure
-            if neighbor.is_adapted and random.random() < 0.01 and self.savings > (cost_measure + savings_threshold):
+            if neighbor.is_adapted and random.random() < 0.01 and self.savings > (self.cost_measure + savings_threshold):
                 # Set self to adapted
                 self.is_adapted = True
-                # iteration is not stopped with "break" to increase likelihood 
+                # Iteration is not stopped with "break" to increase likelihood 
         
         # Multiply the savings with a random factor between 0.9 and 1.1 to simulate savings and expenses of the household
         self.savings = self.savings * random.uniform(0.9, 1.1)
@@ -128,7 +123,7 @@ class Government(Agent):
     """
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
-        self.subsidies = 300 # Add subsidies attribute
+        self.subsidies = 0.2 # Add subsidies attribute
 
     def step(self):
         pass
