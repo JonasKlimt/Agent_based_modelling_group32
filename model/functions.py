@@ -163,7 +163,7 @@ def calculate_basic_flood_damage(flood_depth):
     else:
         # see flood_damage.xlsx for function generation
         flood_damage = 0.1746 * math.log(flood_depth) + 0.6483
-    return flood_damage
+    return flood_damage * 100000 # multiply the flood damage with 100000 to get the damage in USD
 
 # Function to calculate the flood damage when an adaptation measure is taken
 def calculate_adapted_flood_damage(flood_depth):
@@ -188,7 +188,7 @@ def calculate_adapted_flood_damage(flood_depth):
     else:
         # see flood_damage.xlsx for function generation
         flood_damage = 0.1746 * math.log(flood_depth+1) + 0.6483
-    return flood_damage
+    return flood_damage * 100000 # multiply the flood damage with 100000 to get the damage in USD
 
 # Expected utility based on the prospect theory, Source:
 # Haer, T., Botzen, W. J. W., de Moel, H., & Aerts, J. C. J. H. (2017).

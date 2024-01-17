@@ -60,15 +60,21 @@ class Households(Agent):
         # Create a list with percived flood risk
         self.flood_risk = [0.4, 0.3, 0.3, 0.0] # TODO: are these risk perceptions realisitc?
         
-        # Cost of adaption measures
-        self.cost_measure = 1 - self.model.government.subsidies #TODO: exchange this with variable coming from the government agent
+        # Cost of adaption measures reduced by the subsidies defined by the government agent
+        self.cost_measure = 1 - self.model.government.subsidies
+        
+        
         # TODO: adapt cost measure so that is realisitc compared to estimated damage (also in money value), probably should adapt estimated damage (mulitply it wiht a price)
         
         # Initialize variables to store the sums
         self.expected_utility_measure = 0
         self.expected_utility_nomeasure = 0
 
-        # Sum the expected utilities for each flood risk and perceived flood damage to get the total expected utility for action=True and action=False (see formula paper # TODO add paper reference)
+        # Sum the expected utilities for each flood risk and perceived flood damage to get the total expected utility for action=True and action=False
+        # Expected utility based on the prospect theory, Source:
+        # Haer, T., Botzen, W. J. W., de Moel, H., & Aerts, J. C. J. H. (2017).
+        # Integrating Household Risk Mitigation Behavior in Flood Risk Analysis: An Agent-Based Model Approach.
+        # Risk Analysis, 37(10), 1977–1992. https://doi.org/10.1111/risa.12740
         for risk_of_flood, perceived_flood_damage in zip(self.flood_risk, self.flood_damage_estimated_list):
             # Calculate the expected utility for adaptation=True
             utility_adaptation_true = expected_utility_prospect_theory(risk_of_flood=risk_of_flood, cost_of_measure=self.cost_measure, percieved_flood_damage=perceived_flood_damage, action=True)
@@ -124,6 +130,9 @@ class Government(Agent):
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
         self.subsidies = 0.2 # Add subsidies attribute
+        
+        # TODO: 3 different subsidies level
+        # three different scenarios
 
     def step(self):
         pass

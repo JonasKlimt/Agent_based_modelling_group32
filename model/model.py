@@ -14,7 +14,7 @@ from agents import Households
 from agents import Government
 
 # Import functions from functions.py
-from functions import get_flood_map_data, calculate_basic_flood_damage, calculate_adapted_flood_damage
+from functions import get_flood_map_data, calculate_basic_flood_damage, calculate_adapted_flood_damage, get_flood_depth, load_flood_map
 from functions import map_domain_gdf, floodplain_gdf
 
 
@@ -59,6 +59,9 @@ class AdaptationModel(Model):
         # create grid out of network graph
         self.grid = NetworkGrid(self.G)
 
+        # Create attribute that is the flood map choice
+        self.flood_map_choice = flood_map_choice
+
         # Initialize maps
         self.initialize_maps(flood_map_choice)
 
@@ -79,21 +82,9 @@ class AdaptationModel(Model):
             # Create the household with the chosen savings level
             household = Households(unique_id=i, model=self, savings=savings)
             
-            # TODO: Add attributes and inital values here
-            # Perception
-                # Estimated damage
-                # Percieved flood likleyhood (risk)
-            
-                # Savings
-                # Influence by friends
-                
-    
             # Add the household to the schedule and place it on the grid
             self.schedule.add(household)
             self.grid.place_agent(agent=household, node_id=node)
-                
-        # TODO: add government agent here (create an if statement to analyze model with and without policy implementation; are the results statistically significant?)
-        # TODO: perform statisitcal analysis to see the effect of policy implementation
 
         # Data collection setup to collect data
         model_metrics = {
@@ -103,8 +94,8 @@ class AdaptationModel(Model):
         }
         
         agent_metrics = {
-                        "FloodDepthEstimated": "flood_depth_estimated",
-                        "FloodDamageEstimated" : "flood_damage_estimated",
+                        #"FloodDepthEstimated": "flood_depth_estimated",
+                        #"FloodDamageEstimated" : "flood_damage_estimated",
                         "FloodDepthActual": "flood_depth_actual",
                         "FloodDamageActual" : "flood_damage_actual",
                         "IsAdapted": "is_adapted",
@@ -112,7 +103,7 @@ class AdaptationModel(Model):
                         "Location":"location",
                         "Savings":"savings"
                         # ... other reporters ...
-                        # TODO: add more agent metrics here
+                        # TODO: add more agent metrics here?
                         }
         #set up the data collector 
         self.datacollector = DataCollector(model_reporters=model_metrics, agent_reporters=agent_metrics)
@@ -208,13 +199,19 @@ class AdaptationModel(Model):
         assume local flooding instead of global flooding). The actual flood depth can be 
         estimated differently
         """
-        # TODO: Modify when flood hits. Maybe modify how the flood depth is calculated if we have additional time.
         
-        if self.schedule.steps == 5:
+        if self.schedule.steps == 70:
             for agent in self.schedule.agents:
                 # Calculate the actual flood depth as a random number between 0.5 and 1.2 times the estimated flood depth
-                agent.flood_depth_actual = random.uniform(0.5, 1.2) * agent.flood_depth_estimated
+                # agent.flood_depth_actual = random.uniform(0.5, 1.2) * agent.flood_depth_estimated
                 
+                # Calculate the actual flood depth based on the flood map
+                # TODO: adjust that to actual and adapted flood depth
+                agent.flood_depth_actual = get_flood_depth(corresponding_map=load_flood_map(self.flood_map_choice), location=agent.location, band=self.band_flood_img)
+                # Flood depth can be negative if the location is at a high elevation
+                # handle negative values of flood depth
+                if agent.flood_depth_actual < 0:
+                    agent.flood_depth_actual = 0
                 # IF statement to calculate flood damage depending on adaptation measures taken or not
                 if agent.is_adapted:
                     # calculate the flood damage given the actual flood depth if household is adapted
@@ -226,8 +223,3 @@ class AdaptationModel(Model):
         # Collect data and advance the model by one step
         self.datacollector.collect(self)
         self.schedule.step()
-
-
-# TODO: 3 different subsidies level
-# three different scenarios
-# 
