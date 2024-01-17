@@ -60,9 +60,11 @@ class Households(Agent):
         # Create a list with percived flood risk
         self.flood_risk = [0.4, 0.3, 0.3, 0.0] # TODO: are these risk perceptions realisitc?
         
-        # Cost of adaption measures reduced by the subsidies defined by the government agent
-        self.cost_measure = 1 - self.model.government.subsidies
+        # Cost of adaption measures to lift to 1.3 m above ground level
+        self.cost_measure = 35000
         
+        # Cost of adaption measures reduced by the subsidies defined by the government agent
+        self.cost_measure_sub = self.cost_measure - self.model.government.subsidies
         
         # TODO: adapt cost measure so that is realisitc compared to estimated damage (also in money value), probably should adapt estimated damage (mulitply it wiht a price)
         
@@ -77,12 +79,12 @@ class Households(Agent):
         # Risk Analysis, 37(10), 1977–1992. https://doi.org/10.1111/risa.12740
         for risk_of_flood, perceived_flood_damage in zip(self.flood_risk, self.flood_damage_estimated_list):
             # Calculate the expected utility for adaptation=True
-            utility_adaptation_true = expected_utility_prospect_theory(risk_of_flood=risk_of_flood, cost_of_measure=self.cost_measure, percieved_flood_damage=perceived_flood_damage, action=True)
+            utility_adaptation_true = expected_utility_prospect_theory(risk_of_flood=risk_of_flood, cost_of_measure=self.cost_measure_sub, percieved_flood_damage=perceived_flood_damage, action=True)
             # Add the result to the sum for adaptation=True
             self.expected_utility_measure += utility_adaptation_true
 
             # Calculate the expected utility for adaptation=False
-            utility_adaptation_false = expected_utility_prospect_theory(risk_of_flood=risk_of_flood, cost_of_measure=self.cost_measure, percieved_flood_damage=perceived_flood_damage, action=False)
+            utility_adaptation_false = expected_utility_prospect_theory(risk_of_flood=risk_of_flood, cost_of_measure=self.cost_measure_sub, percieved_flood_damage=perceived_flood_damage, action=False)
             # Add the result to the sum for adaptation=False
             self.expected_utility_nomeasure += utility_adaptation_false
 
@@ -101,19 +103,19 @@ class Households(Agent):
 
     def step(self):
         # Threshold of minimum savings housholds still have after taking adaption measures
-        savings_threshold = 0.5 # necessary?
+        savings_threshold = 5000
         
         # Logic for adaptation based on estimated flood damage and a random chance.
         # These conditions are examples and should be refined for real-world applications.
-        if self.expected_utility_measure > self.expected_utility_nomeasure and self.savings > (self.cost_measure + savings_threshold):
+        if self.expected_utility_measure > self.expected_utility_nomeasure and self.savings > (self.cost_measure_sub + savings_threshold):
             self.is_adapted = True  # Agent adapts to flooding
-            self.savings = self.savings - self.cost_measure  # Agent pays for adaptation measures
+            self.savings = self.savings - self.cost_measure_sub  # Agent pays for adaptation measures
         
         # Logic for adaptation based on neighbors who have adapted and a random chance
         # Iterate over the neighbors
         for neighbor in self.model.grid.get_neighbors(self.pos):
             # If the neighbor is adapted and there is a 1% chance of adapting and the savings are enough to pay for the adaptation measure
-            if neighbor.is_adapted and random.random() < 0.01 and self.savings > (self.cost_measure + savings_threshold):
+            if neighbor.is_adapted and random.random() < 0.01 and self.savings > (self.cost_measure_sub + savings_threshold):
                 # Set self to adapted
                 self.is_adapted = True
                 # Iteration is not stopped with "break" to increase likelihood 

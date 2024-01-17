@@ -170,7 +170,7 @@ def calculate_adapted_flood_damage(flood_depth):
     """
     To get flood damage based on flood depth of household
     from de Moer, Huizinga (2017) with logarithmic regression over it.
-    Adapted equation: Flood adaptation measure taken by houshold, which elevates house by 1.2m
+    Adapted equation: Flood adaptation measure taken by houshold, which elevates house by 1.3m
     If flood depth > 7m, damage = 1.
     
     Parameters
@@ -186,8 +186,8 @@ def calculate_adapted_flood_damage(flood_depth):
     elif flood_depth < 1.025:
         flood_damage = 0
     else:
-        # see flood_damage.xlsx for function generation
-        flood_damage = 0.1746 * math.log(flood_depth+1) + 0.6483
+        # see flood_damage.xlsx for function generation (adapted to 1.m elevation)
+        flood_damage = 0.1746 * math.log(flood_depth+1.3) + 0.6483
     return flood_damage * 100000 # multiply the flood damage with 100000 to get the damage in USD
 
 # Expected utility based on the prospect theory, Source:

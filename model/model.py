@@ -72,7 +72,7 @@ class AdaptationModel(Model):
         self.government = Government(unique_id=0, model=self)
         
         # Define the savings levels
-        savings_levels = [1000, 2000, 3000]
+        savings_levels = [10000, 30000, 50000]
 
         # Create households through initiating a household on each node of the network graph
         for i, node in enumerate(self.G.nodes()):
