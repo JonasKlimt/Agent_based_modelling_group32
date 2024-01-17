@@ -204,6 +204,7 @@ def expected_utility_prospect_theory(risk_of_flood, cost_of_measure, percieved_f
     Returns:
     - Utility for the outcome
     """
+        #TODO: subsidies in formula
     
     if action:
         return subjective_weighting_probability(risk_of_flood) * utility_function_prospect_theory(-cost_of_measure-calculate_adapted_flood_damage(percieved_flood_damage))

@@ -32,7 +32,6 @@ class Households(Agent):
         if contains_xy(geom=floodplain_multipolygon, x=self.location.x, y=self.location.y):
             self.in_floodplain = True
 
-
         # List of flood map choices
         flood_map_choices = ['harvey', '100yr', '500yr']
 
@@ -98,21 +97,29 @@ class Households(Agent):
         # Cost of adaption measures
         cost_measure = 1 #TODO: find nice solution to only define cost_measure once
         # Threshold of minimum savings housholds still have after taking adaption measures
-        #savings_threshold = 500 # necessary?
-        
+        savings_threshold = 0.5 # necessary?
+    
         # TODO: add below
         # IF one friend is adapted calculate liklihood of adapting of self
         # only adapt if enough money is available
         
         # Logic for adaptation based on estimated flood damage and a random chance.
         # These conditions are examples and should be refined for real-world applications.
-        if self.expected_utility_measure > self.expected_utility_nomeasure: # and self.savings > cost_measure + savings_threshold:
+        if self.expected_utility_measure > self.expected_utility_nomeasure and self.savings > (cost_measure + savings_threshold):
             self.is_adapted = True  # Agent adapts to flooding
             self.savings = self.savings - cost_measure  # Agent pays for adaptation measures
-            
+        
+        # Iterate over the neighbors
+        for neighbor in self.model.grid.get_neighbors(self.pos):
+            # If the neighbor is adapted and there is a 1% chance of adapting and the savings are enough to pay for the adaptation measure
+            if neighbor.is_adapted and random.random() < 0.01 and self.savings > (cost_measure + savings_threshold):
+                # Set self to adapted
+                self.is_adapted = True
+                # iteration is not stopped with "break" to increase likelihood 
+        
         # Multiply the savings with a random factor between 0.9 and 1.1 to simulate savings and expenses of the household
         self.savings = self.savings * random.uniform(0.9, 1.1)
-
+        
         
 # Define the Government agent class
 class Government(Agent):
