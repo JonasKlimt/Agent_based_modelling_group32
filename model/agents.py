@@ -16,11 +16,26 @@ class Households(Agent):
     In a real scenario, this would be based on actual geographical data or more complex logic.
     """
 
-    def __init__(self, unique_id, model, savings):
+    def __init__(self, unique_id, model, savings_range):
         super().__init__(unique_id, model)
         self.is_adapted = False  # Initial adaptation status set to False
         
-        self.savings = savings  # Add savings attribute
+        self.savings_range = savings_range  # Add savings attribute
+    
+        # Assign agent to an income category based on the income distribution in Houston #TODO: Source
+        self.income_category = random.choices(['low', 'middle', 'high'], weights=[0.34, 0.29, 0.37])[0]
+    
+        # Assign income-specific attributes based on the category
+        if self.income_category == 'low':
+            self.savings = random.randint(self.savings_range[0][0], self.savings_range[0][1])
+            # additional attributes for low income households if needed
+        elif self.income_category == 'middle':
+            self.savings = random.randint(self.savings_range[1][0], self.savings_range[1][1])
+            # additional attributes for middle income households if needed
+        elif self.income_category == 'high':
+            self.savings = random.randint(self.savings_range[2][0], self.savings_range[2][1])
+            # additional attributes for high income households if needed
+
 
         # getting flood map values
         # Get a random location on the map
@@ -121,7 +136,9 @@ class Households(Agent):
                 # Iteration is not stopped with "break" to increase likelihood 
         
         # Multiply the savings with a random factor between 0.9 and 1.1 to simulate savings and expenses of the household
-        self.savings = self.savings * random.uniform(0.9, 1.1)
+        self.savings = self.savings * random.uniform(0.95, 1.05)
+        
+        
         
         
 # Define the Government agent class

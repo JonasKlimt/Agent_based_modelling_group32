@@ -72,15 +72,12 @@ class AdaptationModel(Model):
         self.government = Government(unique_id=0, model=self)
         
         # Define the savings levels
-        savings_levels = [10000, 30000, 50000]
+        savings_levels = [(0, 20000), (20000, 70000), (70000, 250000)]
 
         # Create households through initiating a household on each node of the network graph
         for i, node in enumerate(self.G.nodes()):
-            # Choose a random savings level for the household
-            savings = random.choice(savings_levels)
-    
-            # Create the household with the chosen savings level
-            household = Households(unique_id=i, model=self, savings=savings)
+            # Pass the entire savings_levels list to the Household
+            household = Households(unique_id=i, model=self, savings_range=savings_levels)
             
             # Add the household to the schedule and place it on the grid
             self.schedule.add(household)
@@ -101,7 +98,8 @@ class AdaptationModel(Model):
                         "IsAdapted": "is_adapted",
                         "FriendsCount": lambda a: a.count_friends(radius=1),
                         "Location":"location",
-                        "Savings":"savings"
+                        "Savings":"savings",
+                        "IncomeCategory":"income_category"
                         # ... other reporters ...
                         # TODO: add more agent metrics here?
                         }
