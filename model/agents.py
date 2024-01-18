@@ -73,16 +73,14 @@ class Households(Agent):
             self.flood_damage_estimated_list.append(calculate_basic_flood_damage(flood_depth=flood_depth))
         
         # Create a list with percived flood risk
-        self.flood_risk = [0.4, 0.3, 0.3, 0.0] # TODO: are these risk perceptions realisitc?
+        self.flood_risk = [0.05, 0.15, 0.3, 0.5] # TODO: are these risk perceptions realisitc?
         
         # Cost of adaption measures to lift to 1.3 m above ground level
         self.cost_measure = 35000
         
         # Cost of adaption measures reduced by the subsidies defined by the government agent
         self.cost_measure_sub = self.cost_measure - self.model.government.subsidies
-        
-        # TODO: adapt cost measure so that is realisitc compared to estimated damage (also in money value), probably should adapt estimated damage (mulitply it wiht a price)
-        
+             
         # Initialize variables to store the sums
         self.expected_utility_measure = 0
         self.expected_utility_nomeasure = 0
@@ -133,7 +131,7 @@ class Households(Agent):
             if neighbor.is_adapted and random.random() < 0.01 and self.savings > (self.cost_measure_sub + savings_threshold):
                 # Set self to adapted
                 self.is_adapted = True
-                # Iteration is not stopped with "break" to increase likelihood 
+                # Iteration is not stopped with "break" to increase likelihood with more neighbors
         
         # Multiply the savings with a random factor between 0.9 and 1.1 to simulate savings and expenses of the household
         self.savings = self.savings * random.uniform(0.95, 1.05)
@@ -148,7 +146,7 @@ class Government(Agent):
     """
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
-        self.subsidies = 0.2 # Add subsidies attribute
+        self.subsidies = 5000 # Add subsidies attribute
         
         # TODO: 3 different subsidies level
         # three different scenarios

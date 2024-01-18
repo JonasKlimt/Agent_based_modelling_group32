@@ -91,8 +91,10 @@ class AdaptationModel(Model):
         }
         
         agent_metrics = {
-                        #"FloodDepthEstimated": "flood_depth_estimated",
-                        #"FloodDamageEstimated" : "flood_damage_estimated",
+                        "FloodDepthEstimated": "flood_depth_estimated_list",
+                        "FloodDamageEstimated" : "flood_damage_estimated_list",
+                        "ExpectedUtilityAdaption" : "expected_utility_measure",
+                        "ExpectedUtilityNoAdaption" : "expected_utility_nomeasure",
                         "FloodDepthActual": "flood_depth_actual",
                         "FloodDamageActual" : "flood_damage_actual",
                         "IsAdapted": "is_adapted",
@@ -210,6 +212,7 @@ class AdaptationModel(Model):
                 # handle negative values of flood depth
                 if agent.flood_depth_actual < 0:
                     agent.flood_depth_actual = 0
+                    
                 # IF statement to calculate flood damage depending on adaptation measures taken or not
                 if agent.is_adapted:
                     # calculate the flood damage given the actual flood depth if household is adapted

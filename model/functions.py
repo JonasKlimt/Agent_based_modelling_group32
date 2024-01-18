@@ -189,6 +189,7 @@ def calculate_adapted_flood_damage(flood_depth):
         # see flood_damage.xlsx for function generation (adapted to 1.m elevation)
         flood_damage = 0.1746 * math.log(flood_depth+1.3) + 0.6483
     return flood_damage * 100000 # multiply the flood damage with 100000 to get the damage in USD
+#TODO: how can the flood damage be hgiher than 100000?
 
 # Expected utility based on the prospect theory, Source:
 # Haer, T., Botzen, W. J. W., de Moel, H., & Aerts, J. C. J. H. (2017).
