@@ -189,14 +189,13 @@ def calculate_adapted_flood_damage(flood_depth):
         # see flood_damage.xlsx for function generation (adapted to 1.m elevation)
         flood_damage = 0.1746 * math.log(flood_depth+1.3) + 0.6483
     return flood_damage * 100000 # multiply the flood damage with 100000 to get the damage in USD
-#TODO: how can the flood damage be hgiher than 100000?
 
 # Expected utility based on the prospect theory, Source:
 # Haer, T., Botzen, W. J. W., de Moel, H., & Aerts, J. C. J. H. (2017).
 # Integrating Household Risk Mitigation Behavior in Flood Risk Analysis: An Agent-Based Model Approach.
 # Risk Analysis, 37(10), 1977–1992. https://doi.org/10.1111/risa.12740
 
-def expected_utility_prospect_theory(risk_of_flood, cost_of_measure, percieved_flood_damage, action):
+def expected_utility_prospect_theory(risk_of_flood, cost_of_measure, subsidie, percieved_flood_damage, action):
     """
     General utility function for the prospect theory model.
 
@@ -210,9 +209,10 @@ def expected_utility_prospect_theory(risk_of_flood, cost_of_measure, percieved_f
     - Utility for the outcome
     """
         #TODO: subsidies in formula
+        # test
     
     if action:
-        return subjective_weighting_probability(risk_of_flood) * utility_function_prospect_theory(-cost_of_measure-calculate_adapted_flood_damage(percieved_flood_damage))
+        return subjective_weighting_probability(risk_of_flood) * utility_function_prospect_theory(-cost_of_measure+subsidie-calculate_adapted_flood_damage(percieved_flood_damage))
     else:
         return subjective_weighting_probability(risk_of_flood) * utility_function_prospect_theory(-calculate_basic_flood_damage(percieved_flood_damage))
         

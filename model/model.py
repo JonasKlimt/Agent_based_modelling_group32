@@ -206,7 +206,6 @@ class AdaptationModel(Model):
                 # agent.flood_depth_actual = random.uniform(0.5, 1.2) * agent.flood_depth_estimated
                 
                 # Calculate the actual flood depth based on the flood map
-                # TODO: adjust that to actual and adapted flood depth
                 agent.flood_depth_actual = get_flood_depth(corresponding_map=load_flood_map(self.flood_map_choice), location=agent.location, band=self.band_flood_img)
                 # Flood depth can be negative if the location is at a high elevation
                 # handle negative values of flood depth
