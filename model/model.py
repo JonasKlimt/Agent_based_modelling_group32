@@ -82,6 +82,9 @@ class AdaptationModel(Model):
             # Add the household to the schedule and place it on the grid
             self.schedule.add(household)
             self.grid.place_agent(agent=household, node_id=node)
+            
+        # Define when flood occurs (in steps)
+        self.flood_occurs = 70
 
         # Data collection setup to collect data
         model_metrics = {
@@ -95,6 +98,8 @@ class AdaptationModel(Model):
                         "FloodDamageEstimated" : "flood_damage_estimated_list",
                         "ExpectedUtilityAdaption" : "expected_utility_measure",
                         "ExpectedUtilityNoAdaption" : "expected_utility_nomeasure",
+                        "RiskPerception" : "RPt",
+                        "PriorRiskPerception" : "RPt_1",
                         "FloodDepthActual": "flood_depth_actual",
                         "FloodDamageActual" : "flood_damage_actual",
                         "IsAdapted": "is_adapted",
@@ -200,7 +205,7 @@ class AdaptationModel(Model):
         estimated differently
         """
         
-        if self.schedule.steps == 70:
+        if self.schedule.steps == self.flood_occurs:
             for agent in self.schedule.agents:
                 # Calculate the actual flood depth as a random number between 0.5 and 1.2 times the estimated flood depth
                 # agent.flood_depth_actual = random.uniform(0.5, 1.2) * agent.flood_depth_estimated
