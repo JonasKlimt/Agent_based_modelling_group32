@@ -181,9 +181,9 @@ def calculate_adapted_flood_damage(flood_depth):
     -------
     flood_damage : damage factor between 0 and 1
     """
-    if flood_depth >= 7:
+    if flood_depth >= 7.3:
         flood_damage = 1
-    elif flood_depth < 1.025:
+    elif flood_depth < 1.325:
         flood_damage = 0
     else:
         # see flood_damage.xlsx for function generation (adapted to 1.m elevation)

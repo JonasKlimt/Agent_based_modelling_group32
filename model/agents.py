@@ -57,9 +57,13 @@ class Households(Agent):
 
         # Calculate flood_depth_estimated for each choice
         for choice in flood_map_choices:
-            # Get the estimated flood depth at those coordinates. 
-            # the estimated flood depth is calculated based on the flood map (i.e., past data) so this is not the actual flood depth
-            self.flood_depth_estimated = get_flood_depth(corresponding_map=load_flood_map(choice), location=self.location, band=model.band_flood_img)
+            # Load the flood map
+            flood_map = load_flood_map(choice)
+            # Update the band
+            model.band_flood_img = flood_map.read(1)
+            # Get the estimated flood depth at those coordinates
+            self.flood_depth_estimated = get_flood_depth(corresponding_map=flood_map, location=self.location, band=model.band_flood_img)
+  
             # Flood depth can be negative if the location is at a high elevation
             # handle negative values of flood depth
             if self.flood_depth_estimated < 0:
@@ -113,7 +117,7 @@ class Households(Agent):
         if self.count_friends(radius=1) > 0:
             I_social = np.mean([neighbor.RPt for neighbor in self.model.grid.get_neighbors(self.pos)]) # the social influence is the average risk perception of the neighbors
         else:
-            I_social = 1 # accroding to Haer et al. (2017) the social influence is considered 1.0 if its closest to their own risk perception, i.e., no social influence
+            I_social = 1 # according to Haer et al. (2017) the social influence is considered 1.0 if its closest to their own risk perception, i.e., no social influence
         
         self.RPt = risk_perception_bayesian_PT(RPt_1=self.RPt_1, I_social= I_social, I_media=self.model.government.information, flood_occurs=self.model.flood_occurs)
         
@@ -151,7 +155,7 @@ class Households(Agent):
         
         # Logic for adaptation based on estimated flood damage and a random chance.
         # These conditions are examples and should be refined for real-world applications.
-        if self.expected_utility_measure > self.expected_utility_nomeasure and self.savings > (self.cost_measure + savings_threshold):
+        if self.expected_utility_measure > self.expected_utility_nomeasure and self.savings > (self.cost_measure - self.model.government.subsidies + savings_threshold):
             self.is_adapted = True  # Agent adapts to flooding
             self.savings = self.savings - self.cost_measure  # Agent pays for adaptation measures
         
@@ -167,7 +171,7 @@ class Households(Agent):
                # self.is_adapted = True
                 # Iteration is not stopped with "break" to increase likelihood with more neighbors
         
-        # Multiply the savings with a random factor between 0.9 and 1.1 to simulate savings and expenses of the household
+        # Multiply the savings with a random factor between 0.95 and 1.15 to simulate savings and expenses of the household
         self.savings = self.savings * random.uniform(0.95, 1.05)
         
         
@@ -176,24 +180,33 @@ class Households(Agent):
 # Define the Government agent class
 class Government(Agent):
     """
-    A government agent that currently doesn't perform any actions.
+    The government agent class represents the government in the model.
+    The government has two policy instruments: subsidies and information campaign.
+   
     """
-    def __init__(self, unique_id, model):
+    def __init__(self, unique_id, model, subsidie_level, information_bias):
         super().__init__(unique_id, model)
-        self.subsidies = 5000 # Add subsidies attribute
         
-        # TODO: 3 different subsidies level
-        # three different scenarios
+        self.spendings = 0 # Add spendings attribute, this will keep track of the spendings of the government
         
-        #other possibilities:
-        # - building a dike (can be modeled as a overall flood depth reduction)
-        # - information campaign
+        # subsidies polyicy instrument
+        self.subsidies = subsidie_level # in USD
         
-        # information campaign
-        self.information = 0
+        # information campaign poyicy instrument
+        self.information = 0.5 + information_bias # the information campaign is a value between 0 and 1
 
     def step(self):
-        #TODO: implement spendings of subsidies/information campaign
+        
+        # government pays for the information campaign per 1/4 year (1 timestep)
+        if self.information != 0.5:
+            factor = abs(0.5 - self.information)/0.1 # the factor is between 0 and 5
+            self.spendings += 10000 * factor # the spendings are positive but should be interpreted as negative values (in USD)
+        
+        # if an agent adapts, the government spends money on subsidies
+        if self.subsidies > 0 and self.model.schedule.steps == 79:
+            num_adapted_households = sum([1 for agent in self.model.schedule.agents if agent.is_adapted])
+            self.spendings += self.subsidies * num_adapted_households # the spendings are positive but should be interpreted as negative values
+        
         pass
 
 # More agent classes can be added here, e.g. for insurance agents.

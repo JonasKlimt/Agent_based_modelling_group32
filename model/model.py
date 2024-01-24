@@ -40,6 +40,10 @@ class AdaptationModel(Model):
                  number_of_edges = 3,
                  # number of nearest neighbours for WS social network
                  number_of_nearest_neighbours = 5,
+                 # subsidie level the government provides
+                 subsidie_level = 0.0,
+                 # information bias of the government
+                 information_bias = 0.0,
                  ):
         
         super().__init__(seed = seed)
@@ -69,7 +73,7 @@ class AdaptationModel(Model):
         self.schedule = RandomActivation(self)  # Schedule for activating agents
         
         # Create a Government agent and assign it to an attribute
-        self.government = Government(unique_id=0, model=self)
+        self.government = Government(unique_id=50, model=self, subsidie_level=subsidie_level, information_bias=information_bias)
         
         # Define the savings levels
         savings_levels = [(0, 20000), (20000, 70000), (70000, 250000)]
@@ -88,7 +92,8 @@ class AdaptationModel(Model):
 
         # Data collection setup to collect data
         model_metrics = {
-            "total_adapted_households": self.total_adapted_households,
+            "Total_adapted_households": self.total_adapted_households,
+            "GovernmentSpendings": lambda m: m.government.spendings,
             # ... other reporters ...
             # TODO: add more model metrics here?
         }
@@ -106,12 +111,16 @@ class AdaptationModel(Model):
                         "FriendsCount": lambda a: a.count_friends(radius=1),
                         "Location":"location",
                         "Savings":"savings",
-                        "IncomeCategory":"income_category"
+                        "IncomeCategory":"income_category",
                         # ... other reporters ...
                         # TODO: add more agent metrics here?
                         }
+            
         #set up the data collector 
-        self.datacollector = DataCollector(model_reporters=model_metrics, agent_reporters=agent_metrics)
+        self.datacollector = DataCollector(
+            model_reporters=model_metrics, 
+            agent_reporters=agent_metrics
+        )
             
 
     def initialize_network(self):
