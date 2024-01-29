@@ -1,5 +1,6 @@
 # irgnore the virtual environment
 /sen1211
+/env
 
 # ignore the input data
 /input_data
