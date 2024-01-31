@@ -41,6 +41,8 @@ class AdaptationModel(Model):
                  # number of nearest neighbours for WS social network
                  number_of_nearest_neighbours = 5,
                  # subsidie level the government provides
+                 time_of_flooding = 70,
+                 # timestep at which the flooding occurs
                  subsidie_level = 0.0,
                  # information bias of the government
                  information_bias = 0.0,
@@ -51,6 +53,8 @@ class AdaptationModel(Model):
         # defining the variables and setting the values
         self.number_of_households = number_of_households  # Total number of household agents
         self.seed = seed
+        
+        self.running = True  # Variable to control the simulation run
 
         # network
         self.network = network # Type of network to be created
@@ -88,7 +92,7 @@ class AdaptationModel(Model):
             self.grid.place_agent(agent=household, node_id=node)
             
         # Define when flood occurs (in steps)
-        self.flood_occurs = 70
+        self.flood_occurs = time_of_flooding
 
         # Data collection setup to collect data
         model_metrics = {
@@ -108,6 +112,7 @@ class AdaptationModel(Model):
                         "FloodDepthActual": "flood_depth_actual",
                         "FloodDamageActual" : "flood_damage_actual",
                         "IsAdapted": "is_adapted",
+                        "AdaptedAt": "adapted_at_t",
                         "FriendsCount": lambda a: a.count_friends(radius=1),
                         "Location":"location",
                         "Savings":"savings",
@@ -214,6 +219,9 @@ class AdaptationModel(Model):
         estimated differently
         """
         
+        # Update the government's spendings
+        self.government.step()
+        
         if self.schedule.steps == self.flood_occurs:
             for agent in self.schedule.agents:
                 # Calculate the actual flood depth as a random number between 0.5 and 1.2 times the estimated flood depth
@@ -233,7 +241,7 @@ class AdaptationModel(Model):
                 else:
                     # calculate the flood damage given the actual flood depth if household is not adapted
                     agent.flood_damage_actual = calculate_basic_flood_damage(agent.flood_depth_actual)
-                    
+        
         # Collect data and advance the model by one step
         self.datacollector.collect(self)
         self.schedule.step()
