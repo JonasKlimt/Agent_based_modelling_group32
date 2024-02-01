@@ -162,18 +162,6 @@ class Households(Agent):
             self.savings = self.savings - self.cost_measure  # Agent pays for adaptation measures
             self.adapted_at_t = self.model.schedule.steps  # Set the time step at which the agent adapts
         
-        # Logic for adaptation based on neighbors who have adapted and a random chance
-        # Iterate over the neighbors
-        #for neighbor in self.model.grid.get_neighbors(self.pos):
-            #TODO: Interestingly,information can spread not only through established social network connections but also from
-            # spatially proximate households, even if they are not directly connected in the social network
-            
-            # If the neighbor is adapted and there is a 1% chance of adapting and the savings are enough to pay for the adaptation measure
-            #if neighbor.is_adapted and random.random() < 0.01 and self.savings > (self.cost_measure + savings_threshold):
-                # Set self to adapted
-               # self.is_adapted = True
-                # Iteration is not stopped with "break" to increase likelihood with more neighbors
-        
         # Multiply the savings with a random factor between 0.95 and 1.15 to simulate savings and expenses of the household
         self.savings = self.savings * random.uniform(0.95, 1.05)
         

@@ -99,7 +99,6 @@ class AdaptationModel(Model):
             "Total_adapted_households": self.total_adapted_households,
             "GovernmentSpendings": lambda m: m.government.spendings,
             # ... other reporters ...
-            # TODO: add more model metrics here?
         }
         
         agent_metrics = {
@@ -118,7 +117,6 @@ class AdaptationModel(Model):
                         "Savings":"savings",
                         "IncomeCategory":"income_category",
                         # ... other reporters ...
-                        # TODO: add more agent metrics here?
                         }
             
         #set up the data collector 
