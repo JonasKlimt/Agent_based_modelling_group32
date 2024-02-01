@@ -41,8 +41,10 @@ class AdaptationModel(Model):
                  # number of nearest neighbours for WS social network
                  number_of_nearest_neighbours = 5,
                  # subsidie level the government provides
+                 # ### flood related parameters ###
                  time_of_flooding = 70,
                  # timestep at which the flooding occurs
+                 # ### government related parameters ###
                  subsidie_level = 0.0,
                  # information bias of the government
                  information_bias = 0.0,
