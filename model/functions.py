@@ -187,7 +187,7 @@ def calculate_adapted_flood_damage(flood_depth):
         flood_damage = 0
     else:
         # see flood_damage.xlsx for function generation (adapted to 1.m elevation)
-        flood_damage = 0.1746 * math.log(flood_depth+1.3) + 0.6483
+        flood_damage = 0.1746 * math.log(flood_depth-1.3) + 0.6483
     return flood_damage * 100000 # multiply the flood damage with 100000 to get the damage in USD
 #TODO: take hosuing size into consideration depending on income class?
 
